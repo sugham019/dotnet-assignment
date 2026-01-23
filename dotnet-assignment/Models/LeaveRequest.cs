@@ -1,4 +1,4 @@
-namespace dotnet_assignment.Data;
+namespace dotnet_assignment.Model;
 
 public class LeaveRequest
 {

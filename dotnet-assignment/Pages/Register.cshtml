@@ -1,0 +1,51 @@
+@page
+@model dotnet_assignment.Pages.RegisterModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Register Member";
+}
+
+<h2>Register Member</h2>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div>
+        <label>Full Name</label><br />
+        <input asp-for="Input.FullName" />
+        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Email</label><br />
+        <input asp-for="Input.Email" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Password</label><br />
+        <input asp-for="Input.Password" type="password" />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Role</label><br />
+        <select asp-for="Input.Role" 
+                asp-items='new List<SelectListItem> { 
+                    new SelectListItem("Student", "Student"), 
+                    new SelectListItem("Teacher", "Teacher"),
+                    new SelectListItem("Admin", "Admin") 
+                }'>
+        </select>
+        <span asp-validation-for="Input.Role" class="text-danger"></span>
+    </div>
+
+    <br />
+    <button type="submit">Register</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <hr />
+    <p style="color:green; font-weight:bold;">@Model.Message</p>
+}

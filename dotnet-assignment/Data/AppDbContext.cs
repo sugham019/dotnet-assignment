@@ -1,3 +1,4 @@
+using dotnet_assignment.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_assignment.Data;
