@@ -25,6 +25,13 @@
                         <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                     </li>
                     
+                    @if (Context.Session.GetString("UserRole") == "Teacher")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-page="/Attendance">Attendance</a>
+                        </li>
+                    }
+                    
                     @* 2. Logic to switch between Login and Logout buttons *@
                     @if (Context.Session.GetString("UserEmail") != null)
                     {

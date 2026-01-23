@@ -1,0 +1,32 @@
+﻿@page
+@model dotnet_assignment.Pages.AttendanceModel
+
+<h2> Daily Attendance</h2>
+<form method="post">
+    <label>
+        Attendance Date (optional):
+    </label>
+    <input type="date" asp-for="AttendanceDate"/><br/>
+    
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Present</th>
+        </tr>
+        </thead>
+
+        @foreach (var student in Model.Students)
+        {
+            <tr>
+                <td>@student.FullName</td>
+                <td>
+                    <input type="checkbox" name="AttendanceData[@student.Id]" value="ture"/>
+                </td>
+            </tr>
+        }
+    </table>
+    
+    <br/>
+    <button type="submit">Save Attendance</button>
+</form>
