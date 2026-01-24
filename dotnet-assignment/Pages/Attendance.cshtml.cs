@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using  dotnet_assignment.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using dotnet_assignment.Data;
 using dotnet_assignment.Model;
-using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_assignment.Pages;
 
@@ -13,54 +13,77 @@ public class AttendanceModel : PageModel
     {
         _context = context;
     }
-    
-    public List<Member> Students { get; set; } 
-    
-    [BindProperty]
-    public DateTime ? AttendanceDate { get; set; }
-    
-    [BindProperty]
-    public Dictionary<int, bool> AttendanceData { get; set; }
 
+ 
+    public List<Member> Students { get; set; } = new();
+
+   
+    [BindProperty]
+    public DateOnly? AttendanceDate { get; set; }
+
+    
+    [BindProperty]
+    public Dictionary<int, bool> AttendanceData { get; set; } = new();
+
+  
+    public bool IsTeacher =>
+        HttpContext.Session.GetString("UserRole") == "Teacher";
+
+    
     public IActionResult OnGet()
     {
-        if (HttpContext.Session.GetString("Role") != "Teacher")
-        {
+        if (!IsTeacher)
             return RedirectToPage("/Index");
-        }
-        
+
         Students = _context.Members
-            .Where(m=> m.Role == "Student")
+            .Where(m => m.Role == "Student")
             .ToList();
+
         return Page();
     }
 
+    
     public IActionResult OnPost()
     {
-        if (HttpContext.Session.GetString("Role") != "Teacher")
-        {
+        if (!IsTeacher)
             return RedirectToPage("/Index");
-        }
-        
-        DateOnly date = AttendanceDate == null
-            ? DateOnly.FromDateTime(DateTime.Today)
-            : DateOnly.FromDateTime(AttendanceDate.Value);
 
-        foreach (var item  in AttendanceData)
+        Students = _context.Members
+            .Where(m => m.Role == "Student")
+            .ToList();
+
+       
+        DateOnly date = AttendanceDate ?? DateOnly.FromDateTime(DateTime.Today);
+
+        foreach (var student in Students)
         {
-            Attendance attendance = new Attendance
+            bool isPresent =
+                AttendanceData.TryGetValue(student.Id, out bool value) && value;
+
+            var existing = _context.Attendances
+                .FirstOrDefault(a =>
+                    a.MemberId == student.Id &&
+                    a.Date == date);
+
+            if (existing == null)
             {
-                MemberId = item.Key,
-                Date = date,
-                IsPresent = item.Value
-            };
-            
-            _context.Attendances.Add(attendance);
+                _context.Attendances.Add(new Attendance
+                {
+                    MemberId = student.Id,
+                    Date = date,
+                    IsPresent = isPresent,
+                    MarkedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                existing.IsPresent = isPresent;
+                existing.MarkedAt = DateTime.UtcNow;
+            }
         }
-        
+
         _context.SaveChanges();
-        
-        return RedirectToPage("/Index");
-        
+        TempData["SuccessMessage"] = "Attendance saved successfully!";
+        return RedirectToPage("/Attendance");
     }
 }

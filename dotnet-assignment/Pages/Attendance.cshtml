@@ -1,32 +1,66 @@
 ﻿@page
 @model dotnet_assignment.Pages.AttendanceModel
+@{
+    ViewData["Title"] = "Mark Attendance";
+}
 
-<h2> Daily Attendance</h2>
-<form method="post">
-    <label>
-        Attendance Date (optional):
-    </label>
-    <input type="date" asp-for="AttendanceDate"/><br/>
-    
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Student Name</th>
-            <th>Present</th>
-        </tr>
-        </thead>
+@if (!Model.IsTeacher)
+{
+    <div class="alert alert-danger">
+        You do not have permission to access this page.
+    </div>
+}
+else
+{
+    <div class="card p-4 shadow-sm" style="max-width: 600px; margin: 20px auto; border-radius: 10px;">
+        <form method="post">
+            
+            <h2 class="text-center mb-4">Mark Attendance</h2><br/>
+            
+            <div class="mb-4">
+                <label class="form-label fw-bold">Attendance Date</label>
+                <input type="date" asp-for="AttendanceDate" class="form-control" />
+            </div>
+            
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 65%;">Student Name</th>
+                        <th style="width: 35%;">Attendance</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model.Students)
+                    {
+                        <tr>
+                            <td>@student.FullName</td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           name="AttendanceData[@student.Id]"
+                                           value="true" checked />
+                                    <label class="form-check-label">Present</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           name="AttendanceData[@student.Id]"
+                                           value="false" />
+                                    <label class="form-check-label">Absent</label>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            
+            <button type="submit" class="btn btn-success w-100 mt-3">Save Attendance</button>
+        </form>
 
-        @foreach (var student in Model.Students)
+        @if (TempData["SuccessMessage"] != null)
         {
-            <tr>
-                <td>@student.FullName</td>
-                <td>
-                    <input type="checkbox" name="AttendanceData[@student.Id]" value="ture"/>
-                </td>
-            </tr>
+            <div class="alert alert-success mt-3">
+                @TempData["SuccessMessage"]
+            </div>
         }
-    </table>
-    
-    <br/>
-    <button type="submit">Save Attendance</button>
-</form>
+    </div>
+}

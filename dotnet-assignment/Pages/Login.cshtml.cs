@@ -31,6 +31,10 @@ public class LoginModel : PageModel
             HttpContext.Session.SetString("UserRole", user.Role);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
+            if (user.Role == "Teacher")
+            {
+                return RedirectToPage("/Attendance");
+            }
             return RedirectToPage("/Index");
         }
         ErrorMessage = "Invalid login attempt.";
