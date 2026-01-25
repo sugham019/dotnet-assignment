@@ -4,32 +4,34 @@
 @{
     ViewData["Title"] = "Register Member";
 }
+<main class="main-content">
+    <div class="form-card">
 
 <h2>Register Member</h2>
 
 <form method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-    <div>
-        <label>Full Name</label><br />
-        <input asp-for="Input.FullName" />
+    <div class="form-group">
+        <label>Full Name</label>
+        <input asp-for="Input.FullName" placeholder="Enter your full name"/>
         <span asp-validation-for="Input.FullName" class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Email</label><br />
-        <input asp-for="Input.Email" />
+    <div class="form-group">
+        <label>Email</label>
+        <input asp-for="Input.Email"  placeholder="Enter your email"/>
         <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Password</label><br />
-        <input asp-for="Input.Password" type="password" />
+    <div class="form-group">
+        <label>Password</label>
+        <input asp-for="Input.Password" type="password" placeholder="Enter your password"/>
         <span asp-validation-for="Input.Password" class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Role</label><br />
+    <div class="form-group">
+        <label>Role</label>
         <select asp-for="Input.Role" 
                 asp-items='new List<SelectListItem> { 
                     new SelectListItem("Student", "Student"), 
@@ -40,12 +42,119 @@
         <span asp-validation-for="Input.Role" class="text-danger"></span>
     </div>
 
-    <br />
+    
     <button type="submit">Register</button>
 </form>
 
 @if (!string.IsNullOrEmpty(Model.Message))
 {
-    <hr />
-    <p style="color:green; font-weight:bold;">@Model.Message</p>
+    
+    <p class="success-message">@Model.Message</p>
 }
+</div>
+</main>
+<style>
+    body{
+        font-family:'Segoe UI ',sans-serif;
+        background:linear-gradient(120deg,#e0eafc,#cfdef3);
+        margin: 0;
+        display:flex;
+        flex-direction:column;
+        min-height:100vh;
+    }
+    .nav-brand{
+        font-weight:bold;
+        font-size:18px;
+    }
+    nav a{
+        color:white;
+        margin-left:20px;
+        text-decoration:none;
+        font-weight:500;
+    }
+    nav a:hover{
+        text-decoration:underline;
+    }
+    h2{
+        text-align:center;
+        color: #333;
+        margin-bottom:25px;
+        font-weight:600;
+        font-size:24px;
+
+    }
+    .main-content{
+        flex:1;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .form-card{
+        width:400px;
+        background:white;
+        padding:35px;
+        border-radius:12px;
+        border-top:5px solid blue;
+        box-shadow:0 12px 28px rgba(0,0,0,0.15)
+
+    }
+    label{
+        color:#4b5563;
+        font-weight:600;
+    }
+    input,select{
+        width:100%;
+        padding:8px;
+        margin:5px 0 18px 0;
+        border:1px solid #d1d5db;
+        font-size:14px;
+        transition: border-color 0.3s;
+        
+    }
+    input:focus, select:focus{
+        border-color:#007Bff;
+        outline:none;
+    }
+
+    button{
+        width:100%;
+        padding:12px;
+        background:#007Bff;
+        border:none;
+        border-radius: 6px;
+        color: white;
+        font-size:16px;
+        cursor:pointer;
+        transition: background 0.3s;
+
+    }
+    button:hover{
+        background: #0056b3;
+
+    }
+
+    .text-danger{
+        color:red;
+        font-size: 13px;
+    }
+
+   .success-message{
+       color:green;
+       font-weight:bold;
+       margin-top:15px;
+       text-align:center;
+   }
+
+   .form-group{
+       margin-bottom:8px;
+   }
+   .footer{
+       text-align:center;
+       padding:30px;
+       background-color:#f3f4f6;
+       font-size:14px;
+       color:#555;
+   }
+
+   </style>

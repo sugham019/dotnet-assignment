@@ -52,7 +52,7 @@
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
+<footer class="footer">
     <div class="container">
         &copy; 2026 - dotnet_assignment - <a asp-area="" asp-page="/Privacy">Privacy</a>
     </div>
@@ -65,3 +65,83 @@
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<style>
+    body{
+        font-family:'Segor UI', sans-serif;
+        background:linear-gradient(120deg,#e0eafc,#cfdef3);
+        margin:0;
+        display:flex;
+        flex-direction:column;
+        min-height:100vh;
+
+    }
+    .main-content{
+        flex:1;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:20px;
+
+    }
+    .form-card{
+        width:400px;
+        background:#ffffff;
+        padding:35px;
+        border-radius:12px;
+        border-top:5px solid #007Bff;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    }
+    label{
+        font-weight:600;
+        color:#4b5563;
+        display:block;
+        margin:5px;
+
+    }
+
+    input,select{
+        width:100%;
+        padding:8px;
+        margin-bottom:15px;
+        border-radius:6px;
+        border:1px solid #d1d5db;
+        font-size:14px;
+        transition:border-color 0.3s;
+    }
+    input:focus,select:focus{
+        border-color:#007Bff;
+        outline:none;
+    }
+    button{
+        width:100%;
+        padding:12px;
+        background:#007Bff;
+        color:white;
+        border:none;
+        border-radius:6px;
+        font-size:16px;
+        cursor:pointer;
+        transition:background-color 0.3s;
+
+
+    }
+
+    button:hover{
+        background:#0056b3;
+    }
+    .text-danger{
+        color:red;
+        font-size:14px;6b 
+
+    }
+
+    .footer{
+        text-align:center;
+        padding:30px;
+        background-color:#f3f4f6;
+        font-size:14px;
+        color:#555;
+        margin-top:auto;
+    }
+</style>
