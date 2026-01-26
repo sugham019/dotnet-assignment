@@ -1,0 +1,162 @@
+﻿@page
+@model dotnet_assignment.Pages.AttendanceModel
+@{
+    ViewData["Title"] = "Mark Attendance";
+}
+
+@if (!Model.IsTeacher)
+{
+    <div class="alert alert-danger">
+        You do not have permission to access this page.
+    </div>
+}
+else
+{
+    <div class="attendance-card">
+        <h2 class="attendance-title">Mark Attendance</h2>
+
+        <p class="attendance-subtitle">
+            Select a date and mark students as Present or Absent
+        </p>
+
+        <form id="attendanceForm">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label class="form-label">Attendance Date</label>
+                <input type="date"
+                       asp-for="AttendanceDate"
+                       class="form-control"
+                       onchange="loadAttendance()" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Search Student</label>
+                <input type="text"
+                       id="studentSearch"
+                       class="form-control"
+                       placeholder="Type student name..."
+                       onkeyup="filterStudents()" />
+            </div>
+            
+            <div class="table-responsive">
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        @foreach (var student in Model.Students)
+                        {
+                            var existing = Model.ExistingAttendance
+                                .FirstOrDefault(a => a.MemberId == student.Id);
+
+                            <tr data-student-id="@student.Id">
+                                <td class="student-name">@student.FullName</td>
+
+                                <td>
+                                    <input type="radio"
+                                           name="attendance_@student.Id"
+                                           value="true"
+                                           @(existing?.IsPresent == true ? "checked" : "")
+                                           onclick="markAttendance(@student.Id, true)" />
+                                </td>
+
+                                <td>
+                                    <input type="radio"
+                                           name="attendance_@student.Id"
+                                           value="false"
+                                           @(existing?.IsPresent == false ? "checked" : "")
+                                           onclick="markAttendance(@student.Id, false)" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="empty-state d-none">
+                No students found.
+            </div>
+
+            <div id="message" class="status-message"></div>
+        </form>
+    </div>
+}
+
+<script>
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    function markAttendance(memberId, isPresent) {
+        const dateInput = document.querySelector('input[name="AttendanceDate"]');
+        const date = dateInput.value || new Date().toISOString().split('T')[0];
+        const row = document.querySelector(`tr[data-student-id="${memberId}"]`);
+
+        document.getElementById('message').innerHTML =
+            `<div class="alert alert-info">Saving...</div>`;
+
+        fetch(`/Attendance?handler=AutoSave&memberId=${memberId}&isPresent=${isPresent}&date=${date}`, {
+            method: 'POST',
+            headers: { 'RequestVerificationToken': token }
+        })
+        .then(res => res.json())
+        .then(success => {
+            row.classList.remove("present", "absent");
+            row.classList.add(isPresent ? "present" : "absent");
+
+            document.getElementById('message').innerHTML = success
+                ? `<div class="alert alert-success">Attendance saved</div>`
+                : `<div class="alert alert-danger">Save failed</div>`;
+
+            setTimeout(() => document.getElementById('message').innerHTML = '', 1500);
+        });
+    }
+
+    function loadAttendance() {
+        const dateInput = document.querySelector('input[name="AttendanceDate"]');
+        const date = dateInput.value || new Date().toISOString().split('T')[0];
+
+        fetch(`/Attendance?handler=LoadAttendance&date=${date}`)
+            .then(res => res.json())
+            .then(data => {
+                document.querySelectorAll('#studentsTableBody tr').forEach(tr => {
+                    const studentId = tr.dataset.studentId;
+                    const record = data.find(a => a.memberId == studentId);
+
+                    const present = tr.querySelector(`input[value="true"]`);
+                    const absent = tr.querySelector(`input[value="false"]`);
+
+                    tr.classList.remove("present", "absent");
+
+                    if (record) {
+                        present.checked = record.isPresent;
+                        absent.checked = !record.isPresent;
+                        tr.classList.add(record.isPresent ? "present" : "absent");
+                    } else {
+                        present.checked = false;
+                        absent.checked = false;
+                    }
+                });
+            });
+    }
+
+    function filterStudents() {
+        const filter = document.getElementById("studentSearch").value.toLowerCase();
+        let visibleCount = 0;
+
+        document.querySelectorAll("#studentsTableBody tr").forEach(row => {
+            const name = row.querySelector("td").innerText.toLowerCase();
+            const visible = name.includes(filter);
+            row.style.display = visible ? "" : "none";
+            if (visible) visibleCount++;
+        });
+
+        document.getElementById("emptyState")
+            .classList.toggle("d-none", visibleCount !== 0);
+    }
+
+    document.addEventListener("DOMContentLoaded", loadAttendance);
+</script>

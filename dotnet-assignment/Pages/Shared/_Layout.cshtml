@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/dotnet_assignment.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/attendance.css" asp-append-version="true" />
+
 </head>
 <body>
 <header>
@@ -24,6 +26,13 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                     </li>
+                    
+                    @if (Context.Session.GetString("UserRole") == "Teacher")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-page="/Attendance">Attendance</a>
+                        </li>
+                    }
                     
                     @* 2. Logic to switch between Login and Logout buttons *@
                     @if (Context.Session.GetString("UserEmail") != null)

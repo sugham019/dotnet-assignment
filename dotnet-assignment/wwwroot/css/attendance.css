@@ -1,0 +1,108 @@
+﻿/* Css for the Attendance Form */
+
+.attendance-card {
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+.attendance-title {
+    text-align: center;
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.attendance-subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 12px 14px;
+    text-align: center;
+    border: 1px solid #080809; 
+}
+
+.attendance-table thead {
+    background-color: #0d6efd;
+    color: #ffffff;
+}
+
+.attendance-table th:first-child,
+.attendance-table td:first-child {
+    text-align: left;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.attendance-table tbody tr:hover {
+    background-color: #eef4ff;
+}
+
+.attendance-table input[type="radio"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.attendance-table input[value="true"] {
+    accent-color: #198754; 
+}
+
+.attendance-table input[value="false"] {
+    accent-color: #dc3545; 
+}
+
+tr.present {
+    background-color: #e6f4ea !important;
+    color: #146c43;
+    font-weight: 500;
+}
+
+tr.absent {
+    background-color: #fdecea !important;
+    color: #b02a37;
+    font-weight: 500;
+}
+
+tr.present .student-name {
+    color: #146c43;
+}
+
+tr.absent .student-name {
+    color: #b02a37;
+}
