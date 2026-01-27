@@ -6,10 +6,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<h1>Attendance Summary</h1>
+@* <h1 class="mb-4 fw-semibold">Attendance Summary</h1> *@
 
-<form method="get" class="mb-4">
-    <div class="row g-2">
+<form method="get" class="mb-4 p-3 bg-light border rounded">
+    <div class="row g-2 align-items-center">
         <div class="col-auto">
             <select asp-for="StudentId" class="form-select">
                 <option value="">-- Select Student --</option>
@@ -21,31 +21,41 @@
                 }
             </select>
         </div>
+
         <div class="col-auto">
-            <input type="date" asp-for="Date" class="form-control" value="@(Model.Date.HasValue ? Model.Date.Value.ToString("yyyy-MM-dd") : "")" />
+            <input type="date"
+                   asp-for="Date"
+                   class="form-control"
+                   value="@(Model.Date.HasValue ? Model.Date.Value.ToString("yyyy-MM-dd") : "")" />
         </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a asp-page="/AttendanceSummary" class="btn btn-secondary">Reset</a>
+
+        <div class="col-auto d-flex align-items-center">
+            <div class="btn-group" role="group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <a asp-page="/AttendanceSummary" class="btn btn-outline-secondary">
+                    Reset
+                </a>
+            </div>
         </div>
     </div>
 </form>
 
 <div class="row mb-4">
     <div class="col-auto ms-auto">
-        <canvas id="attendanceChart" style="width:400px; height:250px;"></canvas>
+        <div class="card p-3 shadow-sm">
+            <canvas id="attendanceChart" style="width:400px; height:250px;"></canvas>
+        </div>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
 <script>
     var ctx = document.getElementById('attendanceChart').getContext('2d');
-
-    // Check if a single student is selected
     var isSingleStudent = @Model.StudentId.HasValue.ToString().ToLower();
 
     if (isSingleStudent) {
-        // Pie chart for one student
         var presentCount = @Model.AttendanceRecords.Count(a => a.IsPresent);
         var absentCount = @Model.AttendanceRecords.Count(a => !a.IsPresent);
 
@@ -69,17 +79,16 @@
             }
         });
     } else {
-        // Bar chart for all students
         var topStudents = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
             Model.AttendanceRecords
-            .GroupBy(a => a.Member.FullName)
-            .Select(g => new {
-            Name = g.Key,
-            PresentCount = g.Count(a => a.IsPresent)
-            })
-            .OrderByDescending(x => x.PresentCount)
-            .Take(5)
-            .ToList()
+                .GroupBy(a => a.Member.FullName)
+                .Select(g => new {
+                    Name = g.Key,
+                    PresentCount = g.Count(a => a.IsPresent)
+                })
+                .OrderByDescending(x => x.PresentCount)
+                .Take(5)
+                .ToList()
         ));
 
         var studentLabels = topStudents.map(s => s.Name);
@@ -98,10 +107,16 @@
             options: {
                 responsive: true,
                 plugins: {
-                    title: { display: true, text: 'Top 5 Students by Attendance' }
+                    title: {
+                        display: true,
+                        text: 'Top 5 Students by Attendance'
+                    }
                 },
                 scales: {
-                    y: { beginAtZero: true, precision: 0 }
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
                 }
             }
         });
@@ -109,12 +124,12 @@
 </script>
 }
 
-<table class="table table-bordered table-striped">
-    <thead>
+<table class="table table-striped table-hover border">
+    <thead class="table-light">
         <tr>
             <th>Student</th>
             <th>Date</th>
-            <th>Is Present</th>
+            <th>Status</th>
             <th>Marked At (UTC)</th>
         </tr>
     </thead>
@@ -126,7 +141,16 @@
                 <tr>
                     <td>@attendance.Member.FullName</td>
                     <td>@attendance.Date.ToString("yyyy-MM-dd")</td>
-                    <td>@(attendance.IsPresent ? "Present" : "Absent")</td>
+                    <td>
+                        @if (attendance.IsPresent)
+                        {
+                            <span class="badge bg-success">Present</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Absent</span>
+                        }
+                    </td>
                     <td>@attendance.MarkedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
                 </tr>
             }
@@ -134,7 +158,9 @@
         else
         {
             <tr>
-                <td colspan="4" class="text-center">No records found.</td>
+                <td colspan="4" class="text-center text-muted">
+                    No records found.
+                </td>
             </tr>
         }
     </tbody>
