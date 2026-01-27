@@ -5,57 +5,87 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - dotnet_assignment</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/dotnet_assignment.styles.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/attendance.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/css/attendance.css" asp-append-version="true"/>
 </head>
+
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-light shadow-sm mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">dotnet_assignment</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                        <a class="nav-link" asp-page="/Index">Home</a>
                     </li>
-                    
+
                     @if (Context.Session.GetString("UserRole") == "Teacher")
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Attendance">Attendance</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Attendance">Attendance</a>
+                    </li>
                     }
-                    
-                    @* 2. Logic to switch between Login and Logout buttons *@
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/AttendanceSummary">Attendance Summary</a>
+                    </li>
                     @if (Context.Session.GetString("UserEmail") != null)
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Logout">Logout (@Context.Session.GetString("UserRole"))</a>
+                            <a class="nav-link" asp-page="/LeaveRequest">Leave Request</a>
                         </li>
+                    }
+                    @if (Context.Session.GetString("UserRole") == "Teacher")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/LeaveApproval">Leave Approval</a>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="navbar-nav ms-auto align-items-center">
+                    @if (Context.Session.GetString("UserEmail") != null)
+                    {
+                    <li class="nav-item me-2">
+                            <span class="badge bg-secondary">
+                                @Context.Session.GetString("UserEmail")
+                            </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger btn-sm" asp-page="/Logout">
+                            Logout
+                        </a>
+                    </li>
                     }
                     else
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Register">Register</a>
-                        </li>
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-primary btn-sm" asp-page="/Login">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm" asp-page="/Register">
+                            Register
+                        </a>
+                    </li>
                     }
                 </ul>
             </div>
         </div>
     </nav>
 </header>
-<div class="container">
+
+<div class="container main-content">
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
@@ -63,7 +93,8 @@
 
 <footer class="footer">
     <div class="container">
-        &copy; 2026 - dotnet_assignment - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        &copy; 2026 - Smart Attendance & Leave System
+        <a asp-page="/Privacy">Privacy</a>
     </div>
 </footer>
 
@@ -72,85 +103,45 @@
 <script src="~/js/site.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
 
 <style>
-    body{
-        font-family:'Segor UI', sans-serif;
-        background:linear-gradient(120deg,#e0eafc,#cfdef3);
-        margin:0;
-        display:flex;
-        flex-direction:column;
-        min-height:100vh;
-
-    }
-    .main-content{
-        flex:1;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        padding:20px;
-
-    }
-    .form-card{
-        width:400px;
-        background:#ffffff;
-        padding:35px;
-        border-radius:12px;
-        border-top:5px solid #007Bff;
-        box-shadow: 0 12px 28px rgba(0,0,0,0.15);
-    }
-    label{
-        font-weight:600;
-        color:#4b5563;
-        display:block;
-        margin:5px;
-
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #ededed;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
     }
 
-    input,select{
-        width:100%;
-        padding:8px;
-        margin-bottom:15px;
-        border-radius:6px;
-        border:1px solid #d1d5db;
-        font-size:14px;
-        transition:border-color 0.3s;
-    }
-    input:focus,select:focus{
-        border-color:#007Bff;
-        outline:none;
-    }
-    button{
-        width:100%;
-        padding:12px;
-        background:#007Bff;
-        color:white;
-        border:none;
-        border-radius:6px;
-        font-size:16px;
-        cursor:pointer;
-        transition:background-color 0.3s;
-
-
+    .main-content {
+        flex: 1;
+        padding: 20px;
     }
 
-    button:hover{
-        background:#0056b3;
-    }
-    .text-danger{
-        color:red;
-        font-size:14px;6b 
-
+    .navbar {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
     }
 
-    .footer{
-        text-align:center;
-        padding:30px;
-        background-color:#f3f4f6;
-        font-size:14px;
-        color:#555;
-        margin-top:auto;
+    .navbar .nav-link {
+        margin-right: 12px;
+        transition: color 0.2s, transform 0.2s;
+    }
+
+    .navbar .nav-link:hover {
+        color: #0d6efd;
+        transform: translateY(-1px);
+    }
+
+    .footer {
+        text-align: center;
+        padding: 30px;
+        background-color: #f3f4f6;
+        font-size: 14px;
+        color: #555;
+        margin-top: auto;
     }
 </style>
+</body>
+</html>
