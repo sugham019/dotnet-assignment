@@ -1,0 +1,121 @@
+@page
+@model dotnet_assignment.Pages.LeaveApprovalModel
+
+<main class="main-content">
+    <div class="table-card">
+        <h2 class="title">Pending Leave Requests</h2>
+        <br>
+        <br>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <p class="text-danger">@Model.ErrorMessage</p>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <p class="text-success">@Model.SuccessMessage</p>
+        }
+
+        @if (Model.PendingLeaves.Count == 0)
+        {
+            <p>No pending leave requests.</p>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Reason</th>
+                        <th>Requested At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var leave in Model.PendingLeaves)
+                    {
+                        <tr>
+                            <td>@leave.Member.FullName</td>
+                            <td>@leave.StartDate</td>
+                            <td>@leave.EndDate</td>
+                            <td>@leave.Reason</td>
+                            <td>@leave.RequestedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            <td>
+                                <form method="post" asp-page-handler="Approve" style="display:inline">
+                                    <input type="hidden" name="id" value="@leave.Id" />
+                                    <button class="approve-btn">Approve</button>
+                                </form>
+
+                                <form method="post" asp-page-handler="Reject" style="display:inline">
+                                    <input type="hidden" name="id" value="@leave.Id" />
+                                    <button class="reject-btn">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</main>
+
+<style>
+    .main-content {
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .table-card {
+        width: 100%;
+        max-width: 1200px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+    }
+
+    th {
+        background: #f3f4f6;
+    }
+
+    button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .approve-btn {
+        background: #16a34a;
+        color: white;
+        margin-right: 5px;
+    }
+
+    .reject-btn {
+        background: #dc2626;
+        color: white;
+    }
+
+    .text-danger {
+        color: red;
+    }
+
+    .text-success {
+        color: green;
+    }
+</style>
