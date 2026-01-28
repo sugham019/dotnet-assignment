@@ -1,0 +1,208 @@
+@page
+@model dotnet_assignment.Pages.LeaveRequestModel
+
+<main class="main-content">
+    <div class="page-wrapper">
+
+      
+        <div class="form-card">
+            <h2 class="title">Leave Request</h2>
+
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <p class="text-success">@Model.SuccessMessage</p>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <p class="text-danger">@Model.ErrorMessage</p>
+            }
+
+            <form method="post">
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" asp-for="StartDate" required />
+                </div>
+
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" asp-for="EndDate" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Reason</label>
+                    <textarea asp-for="Reason" rows="4" required></textarea>
+                </div>
+
+                <button type="submit">Submit Request</button>
+            </form>
+        </div>
+
+ 
+        <div class="table-card">
+            <h3 class="subtitle">My Leave Requests</h3>
+
+            @if (Model.LeaveRequests.Count == 0)
+            {
+                <p>No leave requests submitted yet.</p>
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Requested At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var leave in Model.LeaveRequests)
+                        {
+                            <tr>
+                                <td>@leave.StartDate</td>
+                                <td>@leave.EndDate</td>
+                                <td>@leave.Reason</td>
+                                <td>
+                                    <span class="status @leave.LeaveStatus.ToLower()">
+                                        @leave.LeaveStatus
+                                    </span>
+                                </td>
+                                <td>@leave.RequestedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+    </div>
+</main>
+
+<style>
+    .main-content {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 0;
+    }
+
+
+    .page-wrapper {
+        width: 100%;
+        max-width: 1500px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
+
+
+    .form-card, .table-card {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #4b5563;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        font-size: 14px;
+        transition: border-color 0.3s;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #007Bff;
+        outline: none;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #007Bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+ 
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f3f4f6;
+        font-weight: 600;
+    }
+
+
+    .status {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .status.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status.approved {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .text-danger {
+        color: red;
+    }
+
+    .text-success {
+        color: green;
+    }
+    
+</style>
